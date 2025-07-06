@@ -1,20 +1,20 @@
 'use client';
-
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link'; // ✅ added missing import
 import { timelineEvents } from '@/data/timelineEvents';
 
 export default function EventPage() {
   const { id } = useParams();
-  const event = timelineEvents.find((e) => e.id === id);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
 
-  if (!event) return <p className="p-10 text-center text-xl">Event not found.</p>;
+  const event = timelineEvents.find((e) => e.id === id);
+  if (!event) {
+    return <p className="p-10 text-center text-xl">Event not found.</p>;
+  }
 
-  // Get voices on load
   useEffect(() => {
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
@@ -75,16 +75,16 @@ export default function EventPage() {
               🔊 {isSpeaking ? 'Stop' : 'Listen'}
             </button>
           </div>
-{/* 🧠 Take the Quiz button */}
-<div className="mt-6 flex justify-center">
-  <Link
-    href={`/quiz/${event.id}`}
-    className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-  >
-    🎯 Take the Quiz
-  </Link>
-</div>
 
+          {/* 🧠 Take the Quiz button */}
+          <div className="mt-6 flex justify-center">
+            <Link
+              href={`/quiz/${event.id}`}
+              className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            >
+              🎯 Take the Quiz
+            </Link>
+          </div>
         </div>
       </div>
     </div>
