@@ -2,18 +2,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link'; // ✅ added missing import
+import Link from 'next/link';
 import { timelineEvents } from '@/data/timelineEvents';
 
 export default function EventPage() {
   const { id } = useParams();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
-
-  const event = timelineEvents.find((e) => e.id === id);
-  if (!event) {
-    return <p className="p-10 text-center text-xl">Event not found.</p>;
-  }
 
   useEffect(() => {
     const loadVoices = () => {
@@ -31,6 +26,16 @@ export default function EventPage() {
       window.speechSynthesis.cancel();
     };
   }, []);
+
+  const event = timelineEvents.find((e) => e.id === id);
+
+  if (!event) {
+    return (
+      <div className="p-10 text-center text-xl">
+        ⚠️ Event not found. Please check the URL or return to the timeline.
+      </div>
+    );
+  }
 
   const toggleSpeech = () => {
     if (window.speechSynthesis.speaking) {
@@ -76,7 +81,6 @@ export default function EventPage() {
             </button>
           </div>
 
-          {/* 🧠 Take the Quiz button */}
           <div className="mt-6 flex justify-center">
             <Link
               href={`/quiz/${event.id}`}
